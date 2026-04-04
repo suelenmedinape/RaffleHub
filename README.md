@@ -1,6 +1,6 @@
 # 🎟️ RaffleHub - Ecossistema Digital de Rifas de Alta Performance
 
-![RaffleHub Header](file:///home/suelen/Documents/Baja/rifas/rifas/docs/assets/rafflehub_header.png)
+![RaffleHub Header](/img-site/home.png)
 
 > [!TIP]
 > **Metáfora do Sistema:** O RaffleHub opera como uma "Cozinha Digital" sincronizada:
