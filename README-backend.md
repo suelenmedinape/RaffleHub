@@ -70,5 +70,29 @@ Implementamos políticas agressivas de **Rate Limiting** para proteger endpoints
    ```
 
 ---
+
+## 🐳 Execução via Docker (Recomendado)
+
+Para rodar o backend de forma isolada e rápida utilizando Docker, siga os passos abaixo:
+
+1. **Navegue até a raiz do projeto backend:**
+   ```bash
+   cd rifa-backend/RaffleHub
+   ```
+2. **Suba o container:**
+   ```bash
+   docker compose up -d --build
+   ```
+3. **Verifique o status:**
+   O container `rafflehub.api` estará rodando e a API ficará acessível em `http://localhost:5000`.
+4. **Logs em tempo real:**
+   ```bash
+   docker compose logs -f rafflehub.api
+   ```
+
+> [!NOTE]
+> O Docker utiliza a porta interna `8080` mapeada para a `5000` na sua máquina. Certifique-se de que a porta `5000` esteja livre.
+
+---
 > [!IMPORTANT]
 > O sistema utiliza **Serilog** para logs estruturados, permitindo rastrear o ciclo de vida completo de cada transação financeira no console ou via Seq.
