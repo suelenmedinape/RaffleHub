@@ -1,122 +1,102 @@
-# 🎟️ Sistema de Rifas Digital - Visão Global e Arquitetura
+# 🎟️ RaffleHub - Ecossistema Digital de Rifas de Alta Performance
 
-Ecossistema unificado para gestão de Rifas virtuais em tempo real, abrangendo Pagamentos, Reservas dinâmicas e Conclamação de Prêmios via Automação de WhatsApp.
+![RaffleHub Header](file:///home/suelen/Documents/Baja/rifas/rifas/docs/assets/rafflehub_header.png)
 
-## 📒 Index
-- [🔰 About](#-about)
-- [⚡ Usage](#-usage)
-  - [🔌 Installation](#-installation)
-  - [📦 Commands](#-commands)
-- [🔧 Development](#-development)
-  - [📓 Pre-Requisites](#-pre-requisites)
-  - [🔩 Development Environment](#-development-environment)
-  - [📁 File Structure](#-file-structure)
-  - [🔨 Build](#-build)
-  - [🚀 Deployment](#-deployment)
-- [🌸 Community](#-community)
-- [❓ FAQ](#-faq)
-- [📄 Resources](#-resources)
-- [📷 Gallery](#-gallery)
-- [🌟 Credit/Acknowledgment](#-credit-acknowledgment)
-- [🔒 License](#-license)
+> [!TIP]
+> **Metáfora do Sistema:** O RaffleHub opera como uma "Cozinha Digital" sincronizada:
+> - **O Menu (Frontend):** Interface reativa em Angular 21, onde o cliente escolhe seu "prato" (bilhete) com feedback visual instantâneo via Signals.
+> - **A Cozinha (Backend):** O motor lógico em .NET 9 que processa pedidos, valida ingredientes (dados) e mantém a integridade da despensa (DB).
+> - **A Entrega (WhatsApp):** O sistema de mensageria que envia o comprovante diretamente no WhatsApp do cliente via integração direta com WAHA.
 
+---
 
-## 🔰 About
-Bem-vinda(o) à centralização do Sistema de Rifas! Este repostiório engloba toda a mágica micro-serviçada. O sistema aproxima as peças de software à operação de um restaurante:
-- O **Frontend** (`rifa-frontend`) atua como Menu vivo interativo.
-- O **Backend** (`rifa-backend`) é a cozinha em si, onde ingredientes (Pedidos PIX) tornam-se Pratos (Tickets registrados).
-- A **Automação** (`rifa-n8n`) é a frota do delivery, despachando via Waha.
+## 🚀 Visão Geral e Arquitetura
 
-### Flowchart Arquitetural
+O **RaffleHub** é uma solução *Full Stack* desacoplada, projetada para gerenciar rifas virtuais com zero concorrência e notificações em tempo real. A arquitetura foi pensada para resiliência: se um componente falha, o restante do sistema permanece íntegro.
+
+### 🏗️ O Mapa da Mina (Fluxo de Dados)
 
 ```mermaid
-flowchart TD
-    User([Usuário Final]) -.-> |"Acessa pelo Navegador"| FE
+graph TD
+    User((Usuário Final))
     
-    subgraph SPA [Angular 21 - Frontend]
-        FE[RaffleHub.Web]
-    end
-
-    subgraph API [ASP.NET Core 9 - Backend]
-        BE[RaffleHub.Api]
-        Cache[(Redis - Cache PIX/Auth)]
-        DB[(PostgreSQL - Dados Transacionais)]
-        SB[Supabase - Storage de Imagens]
-    end
-
-    subgraph Automação [n8n Automation Engine]
-        N8N[n8n Orquestrador]
-        WAHA[waha - WhatsApp API]
-        Postgres[PostgreSQL N8N]
-        RedisN8n[Redis n8n]
+    subgraph "Camada de Interface"
+        SPA[Angular 21 SPA]
+        SignalR_Client{SignalR Listener}
     end
     
-    FE -->|"HTTP/JSON\n(Login, Compras, Webhooks PIX)"| BE
-    BE <--> Cache
-    BE <--> DB
-    BE <--> SB
+    subgraph "Cérebro Operacional"
+        API[.NET 9 API]
+        Postgres[(PostgreSQL)]
+        Redis[(Redis Cache)]
+        Hangfire[Hangfire Workers]
+    end
     
-    BE -.->|"Dispara Webhook\nPagamento OK"| N8N
-    
-    N8N -->|"Consome Node Community"| WAHA
-    N8N <--> Postgres
-    N8N <--> RedisN8n
-    
-    WAHA -->|"Notificação WhatsApp"| User
+    subgraph "Mensageria e Pagamentos"
+        WAHA[Waha API]
+        MP[Mercado Pago API]
+    end
+
+    User --> SPA
+    SPA --> API
+    API <--> SignalR_Client
+    API --> Postgres
+    API --> Redis
+    API -- "Notificação Direta" --> WAHA
+    WAHA -- "WhatsApp" --> User
+    MP -- "IPN / Webhook" --> API
 ```
 
-## ⚡ Usage
-É um projeto divido de modo modular em três repositórios independentes amarrados a este contêiner Root.
+---
 
-### 🔌 Installation
-Por serem desacoplados, a instalação varia na linguagem mestre.
+## ⚡ Fluxo de Vida de uma Reserva (The Golden Path)
 
-### 📦 Commands
-A ordem universal para erguer o ecossistema mental e virtual a partir dos terminais no seu computador é a seguinte:
-1. Navegue e Inicie os `docker-compose up -d` da infraestrutura no n8n.
-2. Atualize localmente com `dotnet run` as bases relacionais atreladas no folder `backend`.
-3. Erga o Live Server do Node via `npm start` no `frontend/` com porta `4200`.
+1. **Seleção:** O usuário escolhe os números. O **SignalR** trava os números selecionados para outros usuários em milissegundos.
+2. **Registro:** A API valida os dados via **FluentValidation** e cria uma reserva pendente no **PostgreSQL**.
+3. **Pagamento:** O sistema integra com **Mercado Pago** para gerar um PIX dinâmico personalizado.
+4. **Confirmação:** Ao receber o webhook de pagamento, a API marca a reserva como `PAID`.
+5. **Notificação:** O sistema utiliza o **WAHA** para enviar o comprovante via WhatsApp automaticamente após a confirmação do pagamento.
 
-## 🔧 Development
-### 📓 Pre-Requisites
-O seu computador deve ser provido dos ambientes em Cloud das três ferramentas:
-- Docker Manager (Essencial para os serviços orquestradores).
-- SDK .NET v9 Integral.
-- Ferramental Node JavaScript.
+---
 
-### 🔩 Development Environment
-Não existe um "Run de Projeto Root". Você entra em cada *Environment* conforme listado em File Structure.
+## 🛠️ Stack Tecnológica Enterprise
 
-### 📁 File Structure
-```
-.
-├── rifa-backend         # Pasta base do Monolito Lógico em ASP.NET Core
-├── rifa-frontend        # Pasta Base da UI SPA em Angular 21
-├── rifa-n8n             # Pasta com Stack YAML Engine Waha/N8N
-└── README.md
-```
+| Camada | Tecnologia | Propósito |
+| :--- | :--- | :--- |
+| **Frontend** | Angular 21 | Interface reativa com Signals e Standalone Components. |
+| **Backend** | .NET 9 | API robusta com Clean Architecture e Result Pattern. |
+| **Real-time** | SignalR | Sincronização instantânea de estado entre clientes. |
+| **Workers** | Hangfire | Processamento de tarefas em background e agendamentos. |
+| **Mensageria** | Waha | Gateway profissional de WhatsApp. |
+| **Logs** | Serilog + Seq | Observabilidade e rastreamento de erros centralizado. |
 
-### 🔨 Build
-Consultar README dos módulos isolados para gerar Build Release de sua DockerImage C# e a Pasta `Dist/` Angular.
+---
 
-### 🚀 Deployment
-Integramos a pipeline com Clouds ágeis como Koyeb API onde as Envs vars globais atuam unidas sobre a persistência dos clusters Postgre. 
+## ✨ Demonstração Visual
 
-## 🌸 Community
-Você pode sugerir extensões no fluxo. Leia os repositório em suas lógicas subjacentes.
+<carousel>
+![Home Page](file:///home/suelen/Documents/Baja/rifas/rifas/docs/assets/homepage.png)
+<!-- slide -->
+![Raffle Details](file:///home/suelen/Documents/Baja/rifas/rifas/docs/assets/raffle_details.png)
+<!-- slide -->
+![Login Page](file:///home/suelen/Documents/Baja/rifas/rifas/docs/assets/login.png)
+</carousel>
 
-## ❓ FAQ
-**Esse repositório possui submódulos GIT?**
-Idealmente podem geridos dessa maneira ou estarem presentes fisicamente durante desenvolvimento local isolado para evitar confusões de Merge entre Front e Back.
+---
 
-## 📄 Resources
-Todos alocados dentro de seus respectivos *readmes*.
+## 📦 Como Navegar neste Repositório
 
-## 📷 Gallery
-*(Aqui será o Mockup geral da tela de login atrelada ao celular rodando whatsapp)*
+Este é um mono-repositório contêiner que agrupa os três pilares do sistema:
+- [rifa-backend](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-backend/README-backend.md): A inteligência e persistência.
+- [rifa-frontend](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/README-frontend.md): A experiência do usuário.
 
-## 🌟 Credit/Acknowledgment
-Aos arquitetos modernos de SPA vs WebAPI.
+---
 
-## 🔒 License
-Sistema de Negócios e Ecommerce particular em Pleno Vigor. Uso reservado à Proprietária.
+## 👤 Autora e Arquiteta
+
+**Suelen** - *Full Stack Developer & Systems Architect.*
+Este projeto é meu laboratório de engenharia moderna, onde aplico padrões de alta escalabilidade e o conceito de **Segundo Cérebro** para documentação e aprendizado contínuo.
+
+---
+> [!IMPORTANT]
+> O uso deste código é estritamente privado. Para licenciamento ou consultas sobre a arquitetura, entre em contato.

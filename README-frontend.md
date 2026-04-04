@@ -1,114 +1,82 @@
-# 🖥️ Aplicação Cliente: RaffleHub Frontend (Angular 21)
+# 🖥️ RaffleHub Frontend - O Motor de Experiência Reativa (Angular 21)
 
-![Frontend Core Engine](https://via.placeholder.com/150?text=Angular+21)
+![Frontend Header](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/docs/assets/frontend_header.png)
 
-A porta de entrada visual do sistema de Rifas. Arquitetura SPA Frontend planejada para escalar, performar e ser estritamente fácil de ler com reatividade moderna do ecossistema v21.
+A face visível do ecossistema RaffleHub. Esta SPA (Single Page Application) foi construída para desafiar os limites da reatividade web moderna, garantindo que o usuário tenha uma experiência instantânea, sem recarregamentos e com total integridade de dados.
 
-[![Build Status](https://img.shields.io/badge/Angular-v21-red)]()
-[![Tailwind](https://img.shields.io/badge/CSS-Tailwind-cyan)]()
-[![RxJS Signals](https://img.shields.io/badge/Reactivity-Signals-purple)]()
+[![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?style=for-the-badge&logo=angular)]()
+[![Signals](https://img.shields.io/badge/Reactivity-Signals-purple?style=for-the-badge)]()
+[![Tailwind](https://img.shields.io/badge/CSS-Tailwind_4-38B2AC?style=for-the-badge&logo=tailwind-css)]()
 
-## 📒 Index
-- [🔰 About](#-about)
-- [⚡ Usage](#-usage)
-  - [🔌 Installation](#-installation)
-  - [📦 Commands](#-commands)
-- [🔧 Development](#-development)
-  - [📓 Pre-Requisites](#-pre-requisites)
-  - [🔩 Development Environment](#-development-environment)
-  - [📁 File Structure](#-file-structure)
-  - [🔨 Build](#-build)
-  - [🚀 Deployment](#-deployment)
-- [🌸 Community](#-community)
-- [❓ FAQ](#-faq)
-- [📄 Resources](#-resources)
-- [📷 Gallery](#-gallery)
-- [🌟 Credit/Acknowledgment](#-credit-acknowledgment)
-- [🔒 License](#-license)
+---
 
-## 🔰 About
-Bem-vinda(o)! Este projeto não é apenas "uma casca HTML", abraçando integralmente a filosofia moderna de reatividade da Web.
+## 🔰 A Filosofia de Reatividade
 
-### A Arquitetura Reativa (Signals vs RxJS)
-Para construir o seu "segundo cérebro" mental, imagine que adotamos uma divisão inteligente do fluxo temporal:
+Para este projeto, adotei um modelo híbrido de gerenciamento de estado que aproveita o melhor do ecossistema Angular:
 
-- **RxJS (Correntes do Rio)**: Usamos os Observables do RxJS como *tubos de conexão assíncrona*. Eles descrevem o trânsito da "água" que chega da API ao nosso sistema de forma canalizada.
-- **Angular Signals (Painel de Status Cristalino)**: Para o *estado visual*. Pense nos Signals como num semáforo. Se a "luz" estiver vermelha, os componentes das Rifas reagem instantaneamente (com zero perdas de ciclo do motor JavaScript V8). O RxJS joga a água no reservatório do Signal, e o DOM apenas observa o reservatório da forma mais rápida!
+### ⚡ Signals: O Coração da Interface
+Diferente do modelo tradicional baseado apenas em Observables, os **Angular Signals** são usados para o estado visual síncrono. Isso significa:
+- **Zero Inconsistência:** Se o número foi clicado, o botão reflete a mudança no mesmo ciclo do microtask.
+- **Performance V8:** Menos verificações de mudança (Change Detection) globais, focando apenas no componente que realmente mudou.
 
-### Validação com Zod
-Formulários são inspecionados em Runtime via **Zod**. As regras interceptam ruídos e tipam os envios de formulário de contato PIX pro Servidor perfeitamente — a garantia C# e TS unida.
+### 🌊 RxJS + SignalR: O Fluxo em Tempo Real
+Enquanto os Signals cuidam do "agora", o **RxJS** e o **SignalR** cuidam do "remoto":
+- **Websockets:** O frontend mantém uma conexão viva com o `PaymentNotificationHub` via SignalR.
+- **Notificações:** Quando um ticket é pago, a interface recebe um evento e brilha o número em verde instantaneamente para todos os usuários logados.
 
-## ⚡ Usage
-Servirá nossa plataforma amigável web rodando ao lado do TailwindCSS e provendo as imagens das Rifas do Supabase.
+---
 
-### 🔌 Installation
-Acesse a pasta interna contendo `package.json` em `RaffleHub/`. Se todos os requisitos constam, utilize seu client de Node Package para injetar o `node_modules`.
+## ✨ Demonstração da Experiência
 
-### 📦 Commands
-```bash
-# Rodar Desenvolvimento Nativo
-npm start
+<carousel>
+![Exploração](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/docs/assets/homepage.png)
+<!-- slide -->
+![Seleção de Números](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/docs/assets/raffle_details.png)
+<!-- slide -->
+![Login Seguro](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/docs/assets/login.png)
+</carousel>
 
-# Testes de Estresse Angular / Components
-npm test
+---
+
+## 🛠️ Detalhes de Engenharia Frontend
+
+### 1. Integridade de Dados com Zod
+Não confiamos apenas no TypeScript. Utilizamos **Zod** para validar schemas de formulários em tempo de execução. Isso impede que dados "sujos" cheguem à nossa API, servindo como uma primeira linha de defesa robusta.
+
+### 2. Standalone & Modern Control Flow
+- O projeto é **Standalone First**, eliminando a verbosidade dos `NgModules`.
+- Utilizamos a nova sintaxe de **Control Flow** (`@if`, `@for`, `@switch`), que é nativamente mais rápida e legível.
+
+---
+
+## 📁 Arquitetura de Pastas (Clean Frontend)
+
+```
+src/app
+├── core/         # Singleton Services (Auth, Interceptors, HubConnection).
+├── shared/       # Components reutilizáveis (Input, Button) e Schemas Zod.
+├── features/     # Módulos de domínio (Gallery, RaffleDetails, MyBookings).
+├── services/     # Camada de comunicação HTTP pura.
+└── pages/        # View Components que agrupam os features.
 ```
 
-## 🔧 Development
-### 📓 Pre-Requisites
-- Node.js (`v20+`).
-- NPM package manager (`> v11`).
-- Angular CLI global sugerido e ativo (`npm i -g @angular/cli@21`).
+---
 
-### 🔩 Development Environment
-No ambiente de clone, ao executar `npm install`, a configuração primária consiste apenas em dizer com qual roteador API conversar.
+## 📦 Comandos e Setup
 
-`src/environments/environment.ts`:
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:5000/api'
-};
-```
+1. **Instalação Profissional:**
+   ```bash
+   npm install --frozen-lockfile
+   ```
+2. **Launch Server:**
+   ```bash
+   npm start
+   ```
+3. **Build for Production:**
+   ```bash
+   npm run build -- --configuration production
+   ```
 
-### 📁 File Structure
-```
-.
-├── src
-│   ├── app
-│   │   ├── core             # Módulos vitais, Tokens (A alma imutável).
-│   │   ├── shared           # Botões utilitários Globais, pipes, Zod.
-│   │   ├── features         # As fatias do bolo de Domínio (Galeria, Pagamento, Autenticação).
-│   │   └── app.component.ts # Bandeja que segura e roteia os Standalone Features.
-│   ├── assets               # Mosaicos Fixos (Imagens padrão de carregamentos)
-│   └── environments         # Enclaves locais x Koyebe Cloud.
-└── angular.json
-```
-
-### 🔨 Build
-Gera as dist minimalistas ES para produção, minificado com standalone:
-```bash
-npm run build
-```
-
-### 🚀 Deployment
-Qualquer serviço de CDN passivo ou Plataformas SSR Angular (Vercel/Netlify) podem orquestrar perfeitamente a pasta `/dist`.
-
-## 🌸 Community
-O frontend ainda possui um escopo privado de atuação UI. Solicições de layouts são revisadas a Nível de Trello.
-
-## ❓ FAQ
-**Porquê meu dropdown do Angular não está funcionando?**
-Verifique na injeção de classe Tailwind CSS se os modais via `@tailwindplus/elements` não estão quebrando compatibilidades visuais da div Pai — evite manipulações com DOM Elements via querySelector! 
-
-## 📄 Resources
-- [Angular RxJS + Signals](https://angular.dev/guide/signals)
-- [Zod TypeScript Validator](https://zod.dev/)
-
-## 📷 Gallery
-*(Screenshots contendo o painel interativo da seleção dos Números).*
-
-## 🌟 Credit/Acknowledgment
-Desenhado do zero pelos guidelines limpos voltados à UX sem engasgos do V8.
-
-## 🔒 License
-Todos os Direitos de Interface e Design Reservados de Acordo com a marca.
+---
+> [!NOTE]
+> Configurado para comunicar-se dinamicamente com o backend via `environments/environment.ts`, suportando deploys em Vercel e Koyeb.
