@@ -1,7 +1,5 @@
 # 🖥️ RaffleHub Frontend - O Motor de Experiência Reativa (Angular 21)
 
-![Frontend Header](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/docs/assets/frontend_header.png)
-
 A face visível do ecossistema RaffleHub. Esta SPA (Single Page Application) foi construída para desafiar os limites da reatividade web moderna, garantindo que o usuário tenha uma experiência instantânea, sem recarregamentos e com total integridade de dados.
 
 [![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?style=for-the-badge&logo=angular)]()
@@ -28,13 +26,16 @@ Enquanto os Signals cuidam do "agora", o **RxJS** e o **SignalR** cuidam do "rem
 
 ## ✨ Demonstração da Experiência
 
-<carousel>
-![Exploração](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/docs/assets/homepage.png)
+![Exploração](/img-site/home.png)
 <!-- slide -->
-![Seleção de Números](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/docs/assets/raffle_details.png)
+![Lista de Rifas](/img-site/raffles.png)
 <!-- slide -->
-![Login Seguro](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-frontend/docs/assets/login.png)
-</carousel>
+![Login Seguro](/img-site/login.png)
+<!-- slide -->
+![Galeria da Equipe](/img-site/gallery.png)
+<!-- slide -->
+![Seleção de Números](/img-site/new-participant.png)
+
 
 ---
 
