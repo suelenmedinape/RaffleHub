@@ -6,7 +6,6 @@
 > **Metáfora do Sistema:** O RaffleHub opera como uma "Cozinha Digital" sincronizada:
 > - **O Menu (Frontend):** Interface reativa em Angular 21, onde o cliente escolhe seu "prato" (bilhete) com feedback visual instantâneo via Signals.
 > - **A Cozinha (Backend):** O motor lógico em .NET 9 que processa pedidos, valida ingredientes (dados) e mantém a integridade da despensa (DB).
-> - **A Entrega (WhatsApp):** O sistema de mensageria que envia o comprovante diretamente no WhatsApp do cliente via integração direta com WAHA.
 
 ---
 
