@@ -1,87 +1,75 @@
-# 🖥️ RaffleHub Frontend - O Palco Angular Moderno (v21)
+# 🖥️ RaffleHub Frontend - O Motor de Experiência Reativa (Angular 21)
 
 ![Frontend Header](/img-site/home.png)
 
-A face performática do sistema. Construir uma SPA interativa e extremamente densa de chamadas não é algo superficial; mas essa camada foi meticulosamente refatorada e aprimorada não só em estética, mas compreendendo fundamentalmente os entraves sistêmicos da Engine V8 Javascript em seu interior de modo limpo e escalável e adotando a filosofia de modernidade do novo ecossistema Angular.
+A face visível do ecossistema RaffleHub. Esta SPA (Single Page Application) foi construída para desafiar os limites da reatividade web moderna, garantindo que o usuário tenha uma experiência instantânea, segura e com total integridade de dados através de uma arquitetura limpa e performática.
 
 [![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?style=for-the-badge&logo=angular)]()
-[![Signals](https://img.shields.io/badge/Signals-Data_Binding-purple?style=for-the-badge)]()
-[![Typescript](https://img.shields.io/badge/Zod-Validation-blue?style=for-the-badge)]()
+[![Signals](https://img.shields.io/badge/Reactivity-Signals-purple?style=for-the-badge)]()
+[![Tailwind](https://img.shields.io/badge/CSS-Tailwind_4-38B2AC?style=for-the-badge&logo=tailwind-css)]()
 
 ---
 
-## 🔰 Filosofia Lógica de Operações (Menos Manipulação, Mais Reatividade)
+## 🔰 Filosofia de Reatividade e Estado
 
-Para eliminar engasgos sintáticos, nós transmutamos o modo tradicional massivo e verboso do angular antigo, reescrevendo em um modelo mais intuitivo visando respeito profundo ao Event Loop e o Processamento Base:
-
-### ⚡ Extinção da Manipulação DOM Selvagem com Padrões Refinados
-Não concebemos, aceitamos nem utilizamos amarras imperativas obscuras que tentam esburacar o código no `getElementById`, nem inserções visuais quebrando fluxos encapsulados.
-Em vez de manipular forçosamente o markup do HTML nos controladores (ex: arquivos adocicados tipo `add-participant-component.ts`), optamos cegamente no paradigma declarativo:
-- **Binding Sensato Constritivo:** Alterações em componentes vitais como Toggle States ou marcações visuais flutuam por vinculações reativas diretas nos atributos `[checked]`, `[disabled]`. O DOM vira um receptor limpo dependente de um estado lógico da variável mantida no Controller e espelhada.
-
-### 🔥 Angular Signals & Esculturas Modulares Síncronas  
-Diferente da era anterior do RxJS pesado global (e seu inferno de detecção de rechecagens sujas - *dirty checking global*), o core reativo do sistema atual depende vigorosamente de Signals na UI diária.
-- As dependências síncronas agora são granulares. Se um contador ou botão muda seu Signal reativo alocado, apenas o minúsculo fragmento que renderizou o botão na sua arvore VDOM repinta; cortando fora sobrecarga computacional desperdiçada processando irmãos estáticos laterais alheios e irrelevantes. 
-
-### 🌊 Orquestrando os Mares Assíncronos: RxJS vs HTTP
-Deixamos O RxJS atuar na área que ele reina de fato e com sabedoria absoluta: transições remanescentes de rotas com resoluções longas, pipes que atrasam submissões do usuário na busca e os interceptores limpos das correntes assíncronas de fluxos Http nativos de ponta a ponta sem encravar o Event Loop na raiz do processo de empacotamento V8.
+Adotamos o modelo de **Angular Signals** para o gerenciamento de estado síncrono da interface, o que permite:
+- **Performance Granular:** Apenas o componente que depende de um sinal específico é renderizado novamente, economizando ciclos da Engine V8.
+- **Zero Manipulação de DOM:** Eliminamos o uso de `document.getElementById` ou similares em favor de `Data-Binding` declarativo direto via `[checked]`, `[disabled]` e o novo `Modern Control Flow` (`@if`, `@for`).
 
 ---
 
-## 🧱 Componentização & Estruturação Funcional Sem Verbosidade
+## ✨ Principais Páginas e Funcionalidades
 
-###  Isolamento Independente Global do `Standalone Component`
-O Raffle Hub refutou e apagou os labirintos antigos do modulo massivo geral "NgModules". Foi implementado o padrão rigoroso de `Standalone Components`, onde cada pequeno botão ou tabela é uma fortaleza isolada possuindo apenas os imports taticamente exigidos.
-
-### Novo Sintático do HTML Modern Control Flow
-Implementou-se amplamente a sintaxe estrutural aprimorada de rotulação visual (`@if`, `@for`, `@defer`, `@switch`). O benefício não consiste apenas em sintaxe legível e agradável comparado à geração clássica de asteriscos (`*ngIf`); isso resulta em compilações finais limpas desonerando templates.
-
----
-
-## ✨ Interfaces Blindadas, Tolerância ZERO a Formatos Irregulares
-
-Por melhor fluidez que o UX TailWind ofereça em modais dinâmicos adaptados: O usuário tenta enviar imperfeições. E a comunicação HTTP só acontece como um pacto limpo neste sistema.
-
-### 🛡️ O Vigia do Portão de Entrada: Integração "Zod" em Runtime
-Não importa apenas "tipar uma interface como numero" visando contentamento do editor de código TypeScript; isso evapora em Execução final de transpile. Nós injetamos verificação densa da biblioteca **Zod**. As validações são espelhdas de fato em memórias reais e testam cada submissão dos modais do projeto (de cadastros aos tipos restritivos numéricos com obrigações de preenchimento). Quando há incoerência lógica ou dado ausente — os avisos bloqueiam fisicamente o tráfego em rede parando logo ali as falhas, devolvendo respostas nítidas com alocação e polidez em mensagens visuais customizadas antes de uma resposta REST de recusa bater à sua porta com pesadas respostas do backend.
+- **🏠 Home:** Landing page com destaques e informações sobre como participar.
+- **🎫 Lista de Rifas:** Vitrine dinâmica de rifas ativas, buscando dados via `RaffleService`.
+- **🔍 Detalhes da Rifa:** Seleção interativa de números (tickets) com bloqueio via SignalR.
+- **🛒 Minhas Reservas:** Área restrita para o participante acompanhar o status de seus bilhetes.
+- **💳 Página de Pagamento:** Exibição do QR Code Pix dinâmico gerado via Mercado Pago.
+- **🔐 Autenticação:** Fluxo completo de Login e Registro com suporte a Refresh Tokens.
+- **🖼️ Galeria:** Exibição de ganhadores e eventos anteriores, organizada por categorias.
 
 ---
 
-## 📁 A Camada Arquitetural Translúcida (Front Organization)
+## 🛠️ Detalhes de Engenharia Frontend
 
-Segmentação cristalina modular no repositório. Código tem seus andares bem definidos com a devida responsabilidade separativa:
+### 1. Validação Robusta com Zod
+Não dependemos apenas da tipagem estática do TypeScript. Utilizamos **Zod** para validar schemas de formulários e payloads de API em tempo de execução, garantindo que nenhum dado inconsistente seja processado.
+
+### 2. Standalone Architecture
+O projeto é **100% Standalone**, eliminando a necessidade de `NgModules` verbosos e facilitando o Tree Shaking na compilação final.
+
+### 3. Integração SignalR
+O frontend mantém conexões vivas com o backend para atualizações em tempo real. Quando um ticket é reservado ou pago por outro usuário, a interface reflete a mudança instantaneamente sem necessidade de atualizar a página.
+
+---
+
+## 📁 Arquitetura de Pastas
 
 ```text
-src/
-└── app/
-    ├── core/         # O Guardião Principal (Gerência de Tokens, Guards Injetoras, Hubs de Conexão Base Signal)
-    ├── shared/       # Depósito Independente Customitazdo (Componentes puros reusáveis, Validações Zod, Interfaces/Models de Dicionário Transversal)
-    ├── features/     # Os Componentes e Blocos com cérebro de modelo de negócio integrados
-    ├── services/     # Isolamento cirúrgico restrito à chamadas Rest API com Interceptadores 
-    └── layouts/      # Visualizações completas compostas das rotas do React Router associadas
+src/app/
+├── core/         # Singleton Services (Auth, HubConnection, Interceptors)
+├── shared/       # Components (Buttons, Modais) e Pipes reutilizáveis
+├── pages/        # Views principais (Home, RaffleList, Auth)
+├── participant/  # Módulos específicos (MyBookings, PaymentPage)
+├── service/      # Camada de comunicação HTTP (RaffleService, BookingService)
+└── models/       # Interfaces e Tipagens TypeScript
 ```
 
 ---
 
-## 🚀 Engenharia de Subida Nativa de Serviço e Compilação 
+## 🚀 Setup e Desenvolvimento
 
-Como erguer a fachada de interface deste monorepo intercontectado. Garanta NodeJs robusto atual e seu backend previamente energizado:
-
-1. **Fixação e Tranca Lógica de Precedentes (Instalações):** 
-   Execute sob premissa protetiva rigorosa em suas versões mapeadas. A alocação garante dependência idênticas ao original.
+1. **Instalação:**
    ```bash
-   npm install --frozen-lockfile
+   npm install
    ```
-
-2. **Acerto Geográfico (Url Injection via Environment):** 
-   Não manipule componentes para atestar mudança de domínio C# Backend HTTP! Acesse o dicionário constante de rede no local correto e module antes de acionar a compilação: Em `src/core/url.ts` ou equivalentes no ambiente `.env` certifique do roteamento do WebAPI exposto:
-   ```typescript
-   export const API_BASE_URL = "http://localhost:5124/api";
-   ```
-
-3. **Subida Viva Reativa:**
+2. **Launch Server:**
    ```bash
    npm start
    ```
-Desfrute da visualização do complexo arquitetural via porta visual nativa `localhost:4200` para iterações estéticas. 
-*(Ao atuar em build de produção, certifique-se das chamadas de build corretas e integrais)*
+3. **Configuração de API:**
+   A URL base da API é configurada em `src/core/url.ts`. Para desenvolvimento local, aponte para `http://localhost:5124`.
+
+---
+> [!NOTE]
+> Estilizado com **Tailwind CSS v4** e componentes **Flowbite**, garantindo uma UI moderna, responsiva e acessível.
