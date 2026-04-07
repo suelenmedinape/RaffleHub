@@ -1,8 +1,8 @@
-# ⚙️ RaffleHub Backend - O Coração Lógico (ASP.NET Core 9)
+# ⚙️ RaffleHub Backend - O Motor Operacional (ASP.NET Core 9 / C#)
 
-![Backend Header](file:///home/suelen/Documents/Baja/rifas/rifas/rifa-backend/docs/assets/backend_header.png)
+![Backend Header](/img-site/home.png)
 
-A API REST centralizada do ecossistema RaffleHub. Esta camada não é apenas um CRUD; é um sistema resiliente construído sob os princípios de **Clean Architecture**, com foco total em integridade de dados e processamento assíncrono.
+A artilharia pesada e o orquestrador silencioso do ecossistema RaffleHub. Esta camada RESTFUL foi forjada escapando da mediocridade do CRUD primitivo e desenhada usando práticas exigentes de Clean Architecture reavaliadas, injetando segurança rigorosa, integridade condicional e independência da engine de frameworks engessados que acoplavam domínios no passado.
 
 [![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet)]()
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)]()
@@ -10,89 +10,72 @@ A API REST centralizada do ecossistema RaffleHub. Esta camada não é apenas um 
 
 ---
 
-## 🏛️ Arquitetura e Padrões de Projeto
+## 🏛️ A Mente por Trás do Código (Práticas Arquiteturais)
 
-O backend segue uma versão simplificada e eficiente da Clean Architecture, garantindo que a regra de negócio seja independente de frameworks externos.
+O refinamento e a eficiência são priorizados na arquitetura implementada. Uma releitura de domínios garante a alta compatibilidade, testabilidade limpa, bem como o isolamento das complexidades operacionais do cotidiano que muitas vezes acabam afogadas em uma sopa de códigos imperativos. 
 
-### 💎 Result Pattern (FluentResults)
-Diferente de sistemas legados que usam `Exceptions` para controle de fluxo, utilizamos o **Result Pattern**.
-- **O que é:** Toda operação de serviço retorna um objeto `Result<T>`.
-- **Vantagem:** Evita o custo computacional de gerar *Stack Traces* para erros comuns (ex: "Bilhete esgotado") e torna o código extremamente legível e fácil de testar.
+### 💎 Descartando Exceções "Caras" (The Result Pattern)
+Na concepção mais engessada do C#, muitos sistemas disparam `Exceptions` para situações comuns como um login renegado, email repetido ou saldo esgotado. Essa abordagem trava threads, incha o lixo de memória com logs imensos (Stack Traces massivos) ativando mais varreduras do sistema.
+Neste projeto adotou-se o modelo puro de **Retornos de Fluxo Via Padrão Result** (`Result<T>`).
+- Quando há violação de regra de negócio corriqueira, o serviço lida polidamente encapsulando a falha explícita no encapsulador tipado do Result e reporta de forma fluida. O servidor não precisa construir *Exceptions* gigantes para avisar que aquele número exato já havia sido pago.
+- O Middleware Extremo lida apenas e unicamente de fato com falhas catastróficas inesperadas no servidor (conexões rompidas abruptamente, transbordos e etc). Tudo retornando invariavelmente mapeado num molde visual simétrico `ErrorResponse` garantindo a comunicação inquebrantável entre back e o parseamento Zod/Typescript Frontend.
 
----
-
-## 🚀 Infraestrutura e Resiliência
-
-### 🐳 Docker & Containerização
-O backend está pronto para ser orquestrado via Docker. O arquivo `compose.yaml` na raiz do backend permite subir o serviço com todas as configurações de ambiente injetadas de forma segura.
-
-### 🔄 Background Jobs com Hangfire
-Para garantir que a API responda instantaneamente, movemos processos lentos para o **Hangfire**:
-- **Expiração de Bilhetes:** Uma tarefa recorrente limpa reservas não pagas a cada minuto.
-- **Relatórios:** Processamento de dados pesados sem travar a thread da requisição.
-
-### 🚦 Rate Limiting & Segurança
-Implementamos políticas agressivas de **Rate Limiting** para proteger endpoints sensíveis contra ataques de força bruta ou bots, garantindo a disponibilidade para usuários reais.
+### 🧹 Simplicidade do Setup (O Fim do Falso UnitOfWork Genérico)
+Ao longo das gerações observamos redundâncias criando acoplamentos sombrios em aplicações sem necessidade.
+Neste C#, eliminamos a "Casca Genérica de Repositórios Globais" por cima do DB. O Entity Framework Core subjacente (`DbContext`) já opera sobre o design pattern de Transaction Commit (`SaveChangesAsync`).  
+Adotamos então a **Injeção de Dependências Direta do EF Context** nos Repositórios Restritos Especializados, ganhando previsibilidade cirúrgica. E as nomenclaturas são sagradas: Controllers pluralizados (`/Categories`, `/Raffles`) refletindo recursos unicamente sob Request/Responses seladas com escopos rígidos expostas a fora (As sagradas transições via DTOs puritanos PascalCase isolados sem corromper entidades nobres locais). 
 
 ---
 
-## 🛰️ Real-time e Integrações
+## 🚀 Engrenagens de Concorrência Assíncrona e Trabalhadores
 
-- **SignalR Hub:** Gerencia o `PaymentNotificationHub`, notificando o frontend em milissegundos assim que um pagamento PIX é confirmado.
-- **Mercado Pago:** Integração nativa para geração de QR Codes e recebimento de webhooks.
-- **WAHA Connectivity:** Disparo de comprovantes via WhatsApp de forma direta, garantindo que o cliente receba seu bilhete instantaneamente.
+O projeto afasta lentidões causadas por excessos imperativos engolindo a rede vital e principal da Thread HTTP via desmembramentos modulares.
 
----
+### 🔄 Hangfire e a Coréia de Trabalhos Off-Thread 
+Existem fardos demorados que o usuário final no salão não tem porque encarar com "loaders" eternos girando na UI:
+- **Expiração Condicional (Reciclagem Lógica):** De tempos em tempos minunciosamente calculados, Hangfire limpa registros bloqueados que a reserva pix jamais adentrou no fluxo vital de forma satisfatória temporal.  
+- **Desencadeamento por Terceiros Estáticos (Extensibilidade WAHA):** Após a notificação do provedor financeiro da estabilização da compra, esse mensageiro injeta no sub-fluxo para notificar em delay as caixas de conversas WAHA mantendo o Gateway leve e responsabilidades distanciadas umas da outras.
 
-## 📁 Estrutura do Projeto (RaffleHub.Api)
 
-```
-├── Controllers/   # Endpoints REST purificados.
-├── Services/      # Orquestração da lógica de negócio.
-├── Repositories/  # Abstração de acesso a dados (EF Core).
-├── Entities/      # Modelos de domínio.
-├── Hubs/          # Hubs SignalR para comunicação bidirecional.
-└── Utils/         # Exception Handlers, Mappings e Jobs.
-```
+### 🚥 SignalR Embutido: O Bloqueio Visceral Visual de Múltiplas Chamadas
+Para transmistir alterações atómicas em alta prioridade nas páginas dinâmicas, utilizamos Websockets vivos do SignalR para atuar não no DB mas no próprio barramento da sessão conectada, travando visivelmente, espelhando "Em Reserva" instantaneamente pelo painel de controle antes do processamento rígido do Postgre sequer findar um escopo, e extinguindo RaceConditions da interface em milissegundos limpos.
 
 ---
 
-## 🔨 Setup Inicial (Modo Dev)
+## 🏗️ Estrutura Tátil de Endpoints
 
-1. **Configuração:** Ajuste o `appsettings.Development.json` com suas chaves de banco e Mercado Pago.
-2. **Migrations:**
+#### Serviço Financeiro & Conexões Nativas (`/RequisitoDeAPI`)
+- **`POST /Transactions`**: Ingestor principal de liquidez. Checa disponibilidade imediata, integra-se agressivamente à conta sandbox via bibliotecas MercadoPago injetadas de fora, salva preliminar garantindo `Guid` base, e finalizado emite objeto QRCode base-64. Regras exclusivas atuam (checa idade do emissor conforme enum de finalidade de Receita ou Gasto vs Identidade no payload antes mesmo da montagem).
+- **`POST /Api/Webhook`**: Rota perfeitamente configurada via IPN Listener; decodifica verificação para autenticidade em HMAC, espelha o status interno e empurra SignalR + Hangfire Broadcast.
+
+#### Entidades Controladas Plurais (`/Persons`, `/Categories`, `/Raffles`)
+- Controllers atômicos provendo deleções pesadas lógicas limpas que refletem no EF Core por intermédio das tabelas dependentes (Evita orfans indesejados). Validação dupla através da infra das Regras Negocio injetadas em Services limpos sobre DataAnnotations básicas prévias.
+
+---
+
+## 🐳 Ambientação Tática, Migrations Estritas e Execução Diária
+
+Os fluxos são concebidos com orquestradores amigáveis. Escolha seu caminho de Setup baseado na facilidade nativa. Serilog está parametrizado por trás para varrer via console logs estruturados permitindo investigação aprofundada pós-eventos de transações caso queira olhar os rastros.
+
+#### Módulo Orquestrado via Contêiner Isométrico (A Receita Inquebrável)
+A maneira isenta de falhas ambientais para levantar a base persistente unida à imagem executável e enxuta do seu SDK .NET para homologação espelhada:
+
+1. **Gatilho Único e Montagem Transversal:** Acesse a raiz principal interna e elimine os volumes residuais antes da ignição:
+   ```bash
+   docker compose down -v
+   docker compose up --build
+   ```
+2. **Reconhecimento Estrito Automático:** O sistema efetuará e garantirá a injeção migrativa de sub tabelas, instanciando os serviços unificados escutando a sua porta `:8080` de base (Verificar reflexos em bindings).
+
+#### Módulo Experimental Rápido Local 
+Tradições de CLI .NET nativo sem orquestração cruzada para exploração aprimorada interativa: 
+1. Sublinhar adequadamente com as conexões e credencial via `appsettings` focado.
+2. Aplicar alinhamento das amarras do Postgre SQL:
    ```bash
    dotnet ef database update
    ```
-3. **Run:**
+3. Subida primária do host:
    ```bash
-   dotnet run --project RaffleHub.Api
+   dotnet run --urls "http://localhost:5124"
    ```
-
----
-
-## 🐳 Execução via Docker (Recomendado)
-
-Para rodar o backend de forma isolada e rápida utilizando Docker, siga os passos abaixo:
-
-1. **Navegue até a raiz do projeto backend:**
-   ```bash
-   cd rifa-backend/RaffleHub
-   ```
-2. **Suba o container:**
-   ```bash
-   docker compose up -d --build
-   ```
-3. **Verifique o status:**
-   O container `rafflehub.api` estará rodando e a API ficará acessível em `http://localhost:5000`.
-4. **Logs em tempo real:**
-   ```bash
-   docker compose logs -f rafflehub.api
-   ```
-
-> [!NOTE]
-> O Docker utiliza a porta interna `8080` mapeada para a `5000` na sua máquina. Certifique-se de que a porta `5000` esteja livre.
-
----
-> [!IMPORTANT]
-> O sistema utiliza **Serilog** para logs estruturados, permitindo rastrear o ciclo de vida completo de cada transação financeira no console ou via Seq.
+Documentação visual nativa viva operante sob os indexadores nativos em Swagger disponível para consumo analítico restrito de modelagens HTTP sob `/swagger/`.
