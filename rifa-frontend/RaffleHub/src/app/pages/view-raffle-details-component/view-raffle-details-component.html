@@ -1,0 +1,188 @@
+<app-background-decoration position="top" variant="left" />
+@if (!isLoading()) {
+@if (raffleData(); as data) {
+<section class="w-full py-8 mt-20">
+    <div class="flex flex-col items-center justify-start px-4 mx-auto max-w-7xl">
+        <h1 class="mb-6 text-2xl font-semibold text-gray-900 dark:text-white nome-da-rifa">
+            {{ data.raffle.data.raffleName }}
+        </h1>
+        <div class="w-full flex flex-col lg:flex-row gap-8">
+            <div class="w-full lg:w-1/3 flex flex-col gap-6">
+                <div class="bg-white rounded-lg shadow p-6 dark:bg-gray-800 dark:border dark:border-gray-700">
+                    <dl class="space-y-3">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data do Sorteio</dt>
+                            <dd class="text-lg text-gray-900 dark:text-white">{{ data.raffle.data.drawDate | date:
+                                'dd/MM/yyyy' }}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Números Disponíveis</dt>
+                            <dd class="text-lg text-gray-900 dark:text-white">
+                                <span>{{ data.raffle.data.totalTickets - data.sold.data.length }}</span> números
+                                restantes
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Valor por Número</dt>
+                            <dd class="text-2xl font-bold text-indigo-600 dark:text-verde-500">
+                                <span>{{ data.raffle.data.ticketPrice | currency: 'BRL' }}</span>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 dark:bg-gray-800 dark:border dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Participar da Rifa</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Preencha seus dados para participar</p>
+                    <form class="space-y-4" (ngSubmit)="submitForm()">
+                        @for (field of formFields; track field.id) {
+                        <div>
+                            <app-input [value]="form.model()[field.key]"
+                                (valueChange)="form.updateField(field.key, $event)" [inputId]="field.id"
+                                [label]="field.label" type="text" [name]="field.id"
+                                [errorMessage]="form.errors()[field.key] || ''" />
+                        </div>
+                        }
+
+                        @if (selectedTickets().length > 0) {
+                        <div class="p-3 bg-indigo-50 dark:bg-verde-900/20 rounded-lg">
+                            <div class="flex justify-between items-center mb-1">
+                                <p class="text-sm font-medium text-indigo-800 dark:text-verde-200">
+                                    Números selecionados: {{ selectedTickets().length }}
+                                </p>
+                                <p class="text-sm font-bold text-indigo-900 dark:text-verde-100">
+                                    Total: {{ totalAmount() | currency: 'BRL' }}
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap gap-1">
+                                @for (num of selectedTickets(); track num) {
+                                <span
+                                    class="px-2 py-1 text-xs font-semibold bg-indigo-100 dark:bg-verde-800 text-indigo-800 dark:text-verde-100 rounded">
+                                    {{ num }}
+                                </span>
+                                }
+                            </div>
+                        </div>
+                        }
+
+                        @if (form.errors()['ticketNumbers']) {
+                        <p class="text-sm text-red-600 dark:text-red-400">
+                            • {{ form.errors()['ticketNumbers'] }}
+                        </p>
+                        }
+
+                        <button type="submit" [disabled]="isProcessingPurchase()"
+                            class="flex w-full items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold text-white shadow-xs transition
+         bg-indigo-500 hover:bg-indigo-400
+         dark:bg-verde-600 dark:hover:bg-verde-500 dark:shadow-none
+         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:focus-visible:outline-verde-600
+         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-500 disabled:dark:hover:bg-verde-500">
+
+                            @if (!isProcessingPurchase()) {
+                            Adicionar Participante
+                            } @else {
+                            <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4">
+                                </circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z">
+                                </path>
+                            </svg>
+
+                            Carregando...
+                            }
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            <div
+                class="w-full lg:w-2/3 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-6">
+                <h4 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Escolha seus números da sorte</h4>
+                <p class="mb-4 text-sm text-gray-600 dark:text-gray-300">
+                    Clique nos números para selecioná-los.
+                </p>
+                @defer (on viewport) {
+                <app-ticket-selector [tickets]="allTickets()" [selectedTickets]="selectedTickets()"
+                    (toggle)="onTicketToggle($event)" />
+                } @placeholder {
+                <div class="grid grid-cols-5 gap-2 animate-pulse">
+                    @for (i of [1,2,3,4,5,6,7,8,9,10]; track i) {
+                    <div class="h-10 w-10 bg-gray-100 dark:bg-gray-700 rounded-md"></div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+}
+} @else {
+<app-loading-component></app-loading-component>
+}
+<app-background-decoration position="bottom" variant="right" />
+
+<el-dialog>
+    <dialog #paymentDialog id="payment-dialog" aria-labelledby="dialog-title"
+        class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+        <el-dialog-backdrop
+            class="fixed inset-0 bg-gray-900/50 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
+
+        <div tabindex="0"
+            class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0 z-50">
+            <el-dialog-panel
+                class="relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
+                <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-verde-500/10 sm:mx-0 sm:size-10">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                aria-hidden="true" class="size-6 text-verde-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 id="dialog-title" class="text-base font-semibold text-white">Forma de pagamento</h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-400">Tudo certo com os seus dados! Você prefere gerar seu
+                                    Pix e pagar agora, ou confirmar sua participação e realizar o pagamento depois?</p>
+                            </div>
+
+                            <div class="mt-4 rounded-md bg-yellow-400/10 p-4 border border-yellow-400/20 text-left">
+                                <div class="flex">
+                                    <div class="shrink-0">
+                                        <svg class="size-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                                            aria-hidden="true">
+                                            <path fill-rule="evenodd"
+                                                d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-yellow-400">Atenção ao Pagar Depois</h3>
+                                        <div class="mt-2 text-sm text-yellow-500/80">
+                                            <p>Será necessário criar conta ou fazer login <strong>com este mesmo número
+                                                    de WhatsApp</strong> para recuperar sua reserva depois.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-700/25 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button type="button" (click)="confirmPurchase(true)" command="close" commandfor="payment-dialog"
+                        class="inline-flex w-full justify-center rounded-md bg-verde-600 px-3 py-2 text-sm font-semibold text-white hover:bg-verde-500 sm:ml-3 sm:w-auto">Pagar
+                        agora</button>
+                    <button type="button" (click)="confirmPurchase(false)" command="close" commandfor="payment-dialog"
+                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20 sm:mt-0 sm:w-auto">Pagar
+                        depois</button>
+                    <button type="button" command="close" commandfor="payment-dialog"
+                        class="mt-3 sm:mr-auto inline-flex w-full justify-center rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-gray-400 hover:text-white sm:mt-0 sm:w-auto">Cancelar</button>
+                </div>
+            </el-dialog-panel>
+        </div>
+    </dialog>
+</el-dialog>

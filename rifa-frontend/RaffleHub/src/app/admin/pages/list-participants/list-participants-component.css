@@ -1,0 +1,42 @@
+.mx-auto {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbar for Tickets */
+.flex-wrap::-webkit-scrollbar {
+    height: 4px;
+}
+
+.flex-wrap::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.flex-wrap::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 10px;
+}
+
+/* Hover effect on table rows */
+tr {
+    transition: all 0.2s ease;
+}
+
+/* WhatsApp button pulse effect on hover */
+.bg-green-500:hover {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+}
+
+/* Skeleton loader or spinner custom style */
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

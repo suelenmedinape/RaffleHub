@@ -1,0 +1,90 @@
+<div class="fixed top-4 right-4 z-50 flex flex-col gap-3 mt-20">
+  @for (toast of toasts; track $index) {
+    <div class="flex items-start gap-3 max-w-sm w-full rounded-lg text-gray-900 bg-white border border-gray-200 dark:bg-slate-800 dark:border-slate-700 px-4 py-3 shadow-lg dark:text-slate-200 animate-slide-in">
+
+      <div class="flex-shrink-0">
+        @if (toast.type === 'success') {
+          <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3"
+                 viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+        } @else {
+          <div class="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3"
+                 viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+          </div>
+        }
+      </div>
+
+      <div class="flex-1">
+        <p class="font-medium text-sm capitalize">{{ toast.type }}</p>
+        <p class="text-xs text-slate-600 dark:text-slate-400">
+          {{ toast.message }}
+        </p>
+      </div>
+
+      <button
+        (click)="removeToast(toast)"
+        class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+        aria-label="Fechar notificação"
+      >
+        ✕
+      </button>
+    </div>
+  }
+</div>
+
+@if (modalAlert) {
+  <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div
+      class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/50 transition-opacity"
+      (click)="closeModal()"
+    ></div>
+
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div
+        class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg dark:bg-gray-800 animate-modal-in"
+        (click)="$event.stopPropagation()">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-800">
+          <div class="sm:flex sm:items-start">
+            @if (modalAlert.type === 'error') {
+              <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10 dark:bg-red-500/10">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6 text-red-600 dark:text-red-400">
+                  <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            } @else {
+              <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:size-10 dark:bg-green-500/10">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6 text-green-600 dark:text-green-400">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+              </div>
+            }
+
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3 id="modal-title" class="text-base font-semibold text-gray-900 dark:text-white capitalize">
+                {{ modalAlert.type }}
+              </h3>
+              <div class="mt-2">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ modalAlert.message }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-700/25">
+          <button (click)="closeModal()" type="button"
+                  class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto dark:bg-white/10 dark:text-white dark:ring-white/10 dark:hover:bg-white/20">Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

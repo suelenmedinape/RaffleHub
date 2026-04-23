@@ -1,0 +1,34 @@
+<div
+        class="w-full bg-white dark:bg-gray-800 rounded-xl shadow-2xl shadow-indigo-500/10 dark:shadow-verde-500/10 border border-indigo-200 dark:border-verde-800/60 p-10 text-center flex flex-col items-center animate-fade-in-up">
+    <div
+            class="w-24 h-24 bg-indigo-100 dark:bg-verde-900/40 text-indigo-50 dark:text-verde-50 rounded-full flex items-center justify-center mb-8 shadow-inner ring-8 ring-indigo-50 dark:ring-verde-900/20">
+        <svg class="w-12 h-12 text-indigo-500 dark:text-verde-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+    </div>
+    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-3 tracking-tight">Pagamento Confirmado!</h2>
+    <p class="text-gray-600 dark:text-gray-400 mb-10 text-lg">Seus números para a rifa <span
+            class="font-semibold text-gray-900 dark:text-white">{{ raffleName() }}</span> foram garantidos com sucesso.
+    </p>
+
+    <div
+            class="bg-linear-to-br from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-800 w-full max-w-lg rounded-2xl p-8 mb-8 border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
+        <div
+                class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAiLz4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjA1Ii8+Cjwvc3ZnPg==')] opacity-50">
+        </div>
+        <h3
+                class="text-sm font-semibold text-indigo-600 dark:text-verde-400 mb-5 uppercase tracking-widest relative z-10">
+            SEUS NÚMEROS DA SORTE</h3>
+        <div class="flex flex-wrap justify-center gap-3 relative z-10">
+            @for (num of acquiredNumbers(); track num) {
+                <span
+                        class="inline-flex items-center justify-center w-14 h-14 text-xl font-black bg-indigo-600 text-white dark:bg-verde-600 dark:text-white rounded-xl shadow-lg shadow-indigo-600/30 dark:shadow-verde-500/40 transform transition-transform hover:scale-110 border border-indigo-400/20">{{
+                        num
+                    }}</span>
+            }
+        </div>
+    </div>
+
+    <p class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800/80 px-4 py-2 rounded-full">Seu recibo e números da sorte ficarão guardados na aba 'Meus Números'. Para acessá-los mais tarde, basta entrar com o mesmo telefone usado nesta compra.</p>
+</div>

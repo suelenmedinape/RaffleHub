@@ -1,0 +1,12 @@
+.typewriter {
+  border-right: 2px solid currentColor;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: blink 1.0s step-end infinite;
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+

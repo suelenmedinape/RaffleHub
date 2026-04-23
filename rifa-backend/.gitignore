@@ -1,0 +1,28 @@
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# Build output
+bin/
+obj/
+
+# Logs
+*.log
+
+# User-specific files
+*.user
+*.suo
+*.DotSettings.user
+
+# ASP.NET - ambiente local (não commitar)
+**/appsettings.Development.json
+
+# Artefatos de compilação
+*.cache
+*.pdb
+*.dll
+
+# Imagem de diagnóstico (opcional, remova se quiser versionar)
+diagrama-rifa.png
+
+**/*.Development.json

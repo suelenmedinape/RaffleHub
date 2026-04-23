@@ -1,0 +1,59 @@
+<div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+  <div
+    style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"
+    class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr dark:from-indigo-800 dark:to-indigo-600 from-verde-500 to-verde-500 opacity-50 sm:left-[calc(50%-30rem)] sm:w-288.75">
+  </div>
+</div>
+<section class="md:py-12 mt-20">
+  <div class="mx-auto max-w-7xl px-4 2xl:px-0">
+    @if (!isLoading()) {
+    <div class="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
+      @for (raffle of raffles; track raffle.id) {
+      <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <div class="h-56 w-full">
+          <a href="#">
+            <img class="mx-auto h-full" src="{{ raffle.imageUrl }}" alt="{{ raffle.raffleName }}" />
+          </a>
+        </div>
+        <div class="pt-6">
+          <div class="mb-4 flex items-center justify-between gap-4">
+            <app-status [status]="raffle.status"></app-status>
+          </div>
+
+          <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">{{
+            raffle.raffleName }}</a>
+
+          <div class="mt-2 w-full">
+            <div class="flex justify-between mb-1">
+              <span class="text-body text-sm text-gray-900 dark:text-white">Nº Vendidos</span>
+              <span class="text-body text-sm text-gray-900 dark:text-white">{{ raffle.soldTicketsCount }} de {{
+                raffle.totalTickets }}</span>
+            </div>
+
+            <div class="relative w-full h-2 bg-neutral-quaternary rounded-full overflow-hidden">
+              <div class="absolute inset-0 bg-gray-300 opacity-20 rounded-full" style="width: 100%;"></div>
+
+              <div class="absolute inset-0 bg-indigo-700 dark:bg-verde-500 rounded-full transition-all duration-300"
+                [style.width.%]="raffle.soldPercentage"></div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex items-center justify-between gap-4">
+            <p class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">{{ raffle.ticketPrice |
+              currency: 'BRL' }}</p>
+
+            <button (click)="viewMore(raffle.id)"
+              [disabled]="raffle.soldTicketsCount >= raffle.totalTickets || raffle.status !== 0" type="button"
+              class="inline-flex items-center rounded-lg bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-800 focus:outline-none focus:ring-4  focus:ring-indigo-300 dark:bg-verde-600 dark:hover:bg-verde-700 dark:focus:ring-verde-800 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-indigo-700 dark:disabled:hover:bg-verde-700">
+              Ver Mais
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    } @else {
+    <app-loading-component></app-loading-component>
+    }
+  </div>
+</section>

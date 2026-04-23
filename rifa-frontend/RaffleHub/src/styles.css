@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss";
+
+@theme {
+  --color-verde-50:  #f7fbe8;
+  --color-verde-100: #f0f6d1;
+  --color-verde-200: #e6efb0;
+  --color-verde-300: #ddea98;
+  --color-verde-400: #e1ecab;
+  --color-verde-500: #D9E987;
+  --color-verde-600: #b9c76f;
+  --color-verde-700: #8f9a55;
+  --color-verde-800: #6c7340;
+  --color-verde-900: #4a4f2c;
+  --color-verde-950: #2a2d18;
+}
+
+html {
+  scrollbar-gutter: stable;
+}

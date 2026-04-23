@@ -1,0 +1,89 @@
+<div class="w-full flex flex-col lg:flex-row gap-8">
+    <!-- Resumo do Pedido -->
+    <div class="w-full lg:w-1/2 flex flex-col gap-6">
+        <div class="bg-white rounded-lg shadow p-6 dark:bg-gray-800 dark:border dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Resumo do Pedido</h2>
+            <dl class="space-y-4">
+                <div class="flex justify-between border-b pb-3 dark:border-gray-700 border-gray-100">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Rifa</dt>
+                    <dd class="text-sm text-gray-900 dark:text-white font-semibold">{{ booking().raffleName }}</dd>
+                </div>
+                <div class="flex justify-between border-b pb-3 dark:border-gray-700 border-gray-100">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Participante</dt>
+                    <dd class="text-sm text-gray-900 dark:text-white font-semibold">{{ booking().participantName }}</dd>
+                </div>
+                <div class="flex justify-between border-b pb-3 dark:border-gray-700 border-gray-100">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data do Pedido</dt>
+                    <dd class="text-sm text-gray-900 dark:text-white font-semibold">{{ booking().createdAt | date:
+                        'dd/MM/yyyy HH:mm' }}</dd>
+                </div>
+                <div class="flex flex-col pt-2 gap-2">
+                    <dd class="flex flex-wrap gap-1 mt-1">
+                        @for (ticket of booking().tickets; track ticket.ticketNumber) {
+                            <span
+                                    class="px-2 py-1 text-xs font-semibold bg-indigo-100 dark:bg-verde-800 text-indigo-800 dark:text-verde-100 rounded">
+                  {{ ticket.ticketNumber }}
+                </span>
+                        }
+                    </dd>
+                </div>
+                <div class="flex justify-between pt-4 mt-2 border-t border-gray-200 dark:border-gray-700">
+                    <dt class="text-base font-medium text-gray-900 dark:text-white">Total a pagar</dt>
+                    <dd class="text-2xl font-bold text-indigo-600 dark:text-verde-500">
+                        {{ booking().totalAmount | currency: 'BRL' }}
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Pagamento via PIX -->
+    <div class="w-full lg:w-1/2 flex flex-col gap-6">
+        <div
+                class="bg-white rounded-lg shadow p-6 dark:bg-gray-800 dark:border dark:border-gray-700 flex flex-col items-center">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 self-start">Pagar via PIX</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 self-start">Abra o app do seu banco e escaneie o QR
+                Code ou copie o código abaixo.</p>
+
+            <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm mb-6 inline-block">
+                <img [src]="booking().pixQrCodeUrl" alt="QR Code PIX" class="w-48 h-48 object-contain" />
+            </div>
+
+            <div class="w-full">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pix Copia e Cola</label>
+                <div class="flex items-center gap-2">
+                    <input type="text" readonly [value]="booking().pixCopyPaste"
+                           class="w-full block flex-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:focus:ring-verde-500 px-3 bg-gray-50" />
+                    <button type="button" (click)="copyPix()"
+                            class="flex justify-center rounded-md px-3 py-1.5 text-sm/6 font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 transition-colors dark:bg-verde-600 dark:text-white dark:hover:bg-verde-500 dark:focus-visible:outline-verde-600 bg-indigo-500 text-white hover:bg-indigo-400 focus-visible:outline-indigo-500">
+                        @if (isCopied()) {
+                            Copiado!
+                        } @else {
+                            Copiar
+                        }
+                    </button>
+                </div>
+            </div>
+
+            <div
+                    class="mt-6 w-full rounded-md bg-indigo-50 p-4 border border-indigo-200 dark:bg-verde-400/10 dark:border-verde-400/20 text-left">
+                <div class="flex">
+                    <div class="shrink-0">
+                        <svg class="size-5 text-indigo-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                  d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-400">Aguardando Pagamento</h3>
+                        <div class="mt-2 text-sm text-yellow-700 dark:text-yellow-500/80">
+                            <p>Seu pedido está reservado! Após o pagamento, o status será atualizado automaticamente em alguns
+                                instantes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

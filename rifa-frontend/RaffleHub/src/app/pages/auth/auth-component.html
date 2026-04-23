@@ -1,0 +1,95 @@
+<div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+  <div
+    style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"
+    class="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr dark:from-indigo-800 dark:to-indigo-600 from-verde-500 to-verde-500 opacity-50 sm:left-[calc(50%-30rem)] sm:w-288.75">
+  </div>
+</div>
+<div class="flex min-h-screen flex-col items-center justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <img src="/logo-iff-road.png" alt="Your Company" class="mx-auto h-24 w-auto" />
+    <h2 class="mt-5 text-center text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">
+      {{ isRegister() ? 'Faça seu registro' : 'Entre na sua conta' }}
+    </h2>
+  </div>
+
+  <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
+    <form action="#" method="POST" class="space-y-6" (ngSubmit)="submitForm()">
+      @if (isRegister()) {
+      <div>
+        <app-input [value]="$any(form.model()).fullName" (valueChange)="form.updateField($any('fullName'), $event)"
+          inputId="fullName" label="Seu nome" type="text" name="fullName"
+          [errorMessage]="form.errors()['fullName'] || ''" />
+      </div>
+      <div class="mt-2">
+        <app-input [value]="$any(form.model()).phone" (valueChange)="form.updateField($any('phone'), $event)"
+          inputId="phone" label="Seu telefone" type="text" name="phone" [errorMessage]="form.errors()['phone'] || ''" />
+      </div>
+      }
+
+      <div>
+        <div class="mt-2">
+          <app-input [value]="form.model().email" (valueChange)="form.updateField('email', $event)" inputId="email"
+            label="Seu email" type="text" name="email" [errorMessage]="form.errors()['email'] || ''" />
+        </div>
+      </div>
+      <div>
+        <app-input [value]="form.model().password" (valueChange)="form.updateField('password', $event)"
+          inputId="password" label="Sua senha" [type]="inputType()" name="password"
+          [errorMessage]="form.errors()['password'] || ''">
+          <a labelAction (click)="showOrHidePassword()"
+            class="font-semibold text-verde-600 hover:text-verde-500 dark:text-indigo-400 dark:hover:text-indigo-300 cursor-pointer">
+            <svg class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="none" viewBox="0 0 24 24">
+              @if (viewPassword()) {
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3.933 13.909A4.357 4.357 0 0 1 3 12c0-1 4-6 9-6m7.6 3.8A5.068 5.068 0 0 1 21 12c0 1-3 6-9 6-.314 0-.62-.014-.918-.04M5 19 19 5m-4 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              } @else {
+              <path stroke="currentColor" stroke-width="2"
+                d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
+              <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              }
+            </svg>
+          </a>
+        </app-input>
+      </div>
+
+      <div>
+        <button type="submit" [disabled]="isLoading()"
+          class="flex w-full items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold text-white shadow-xs transition
+         bg-indigo-500 hover:bg-indigo-400
+         dark:bg-verde-600 dark:hover:bg-verde-500 dark:shadow-none
+         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:focus-visible:outline-verde-600
+         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-500 disabled:dark:hover:bg-verde-500">
+          @if (!isLoading()) {
+          {{ isRegister() ? 'Registre-se' : 'Entrar' }}
+          } @else {
+          <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+            </circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z">
+            </path>
+          </svg>
+
+          Carregando...
+          }
+        </button>
+
+      </div>
+    </form>
+
+    <p class="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
+      {{ isRegister() ? 'Já possui uma conta?' : 'Ainda não tem uma conta' }}
+      <a href="{{ isRegister() ? 'auth/login' : 'auth/register' }}"
+        class="font-semibold dark:text-verde-600 dark:hover:text-verde-500 text-indigo-400 hover:text-indigo-300">
+        {{ isRegister() ? 'Fazer Login' : 'Registre-se' }}
+      </a>
+    </p>
+  </div>
+</div>
+<div aria-hidden="true"
+  class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(75%-30rem)]">
+  <div
+    style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"
+    class="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr dark:from-indigo-800 dark:to-indigo-600 from-verde-500 to-verde-500 opacity-50 sm:left-[calc(50%+36rem)] sm:w-288.75">
+  </div>
+</div>
