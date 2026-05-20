@@ -10,6 +10,10 @@
   },
   "include": [
     "src/**/*.d.ts",
-    "src/**/*.spec.ts"
+    "src/app/service/**/*.spec.ts",
+    "src/app/participant/components/payment-confirmed/**/*.spec.ts",
+    "src/app/participant/pages/payment-page/**/*.spec.ts",
+    "src/app/guard/**/*.spec.ts",
+    "src/app/core/signalr-service.spec.ts"
   ]
 }
