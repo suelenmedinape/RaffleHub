@@ -1,0 +1,27 @@
+name: Frontend Unit Tests (Vitest)
+
+on:
+  push:
+    branches: [ "main", "master", "dev" ]
+  pull_request:
+    branches: [ "main", "master", "dev" ]
+
+jobs:
+  test-docker:
+    name: Run Tests inside Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Run Tests in Container
+        run: |
+          # Constrói a imagem Docker apontando para o subdiretório correto do frontend
+          docker build -t rafflehub-frontend-tests -f RaffleHub.Web/RaffleHub/Dockerfile RaffleHub.Web/RaffleHub
+          
+          # Executa os testes de forma isolada dentro do container
+          docker run --rm rafflehub-frontend-tests
